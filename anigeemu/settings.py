@@ -87,7 +87,11 @@ WSGI_APPLICATION = 'anigeemu.wsgi.application'
 
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600)
+        'default': dj_database_url.config(
+            default=os.environ['DATABASE_URL'],
+            conn_max_age=600,  # Keep the connection open for 10 minutes
+            ssl_require=True  # Use SSL for the connection
+        )
     }
 else:
     DATABASES = {
