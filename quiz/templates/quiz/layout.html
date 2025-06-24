@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}aniGeemu{% endblock %}</title>
+        
+        <!-- Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href= "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+
+        <!-- Style CSS -->
+        <link href="{% static 'quiz/styles.css' %}" rel="stylesheet">
+        
+        <!-- JS -->
+        <script src="{% static 'quiz/game_config_selection.js' %}"></script>
+        <script src="{% static 'quiz/autocomplete.js' %}"></script>
+        <script src="{% static 'quiz/alternate_images.js' %}"></script>
+        <script src="{% static 'quiz/fetch_additional_info.js' %}"></script>
+        <script src="{% static 'quiz/delete_game.js' %}"></script>
+        <script src="{% static 'quiz/focus_image.js' %}"></script>
+        <script src="{% static 'quiz/anti_spam_new_round_fetch.js' %}"></script>
+
+        <!-- CSRF token to access from JS to call fetch -->
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <!-- Viewport for responsive design -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    </head>
+    <body class="d-flex flex-column min-vh-100">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm" >
+            <div class="container d-flex align-items-center justify-content-between flex-wrap">
+                <a class="navbar-brand" style="font-size: 26px;" href="{% url 'home' %}"><strong>aniGeemu</strong></a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end text-end p-1" id="navbarMenu">
+                    <ul class="navbar-nav ms-auto gap-4">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'game_configuration' %}">Game Configuration</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'daily_challenge_list' %}">Daily Challenges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'profile' user.username %}">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'logout_view' %}">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'login_view' %}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-inline-block p-1 my-2" href="{% url 'register' %}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+
+
+        <main class="flex-fill">
+            <div class="body mx-3">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-light text-center text-muted py-3 mt-auto">
+            <small>
+                This page features embedded content from
+                <strong><a href="https://anilist.co/" target="_blank" rel="noopener noreferrer">AniList</a></strong>
+                for entertainment purposes only.
+                All rights and trademarks belong to their respective owners.
+            </small>
+        </footer>
+
+    </body>

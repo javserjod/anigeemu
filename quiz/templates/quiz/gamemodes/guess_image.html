@@ -1,0 +1,188 @@
+{% extends "quiz/layout.html" %}
+
+{% block body %}
+
+<div class="container mt-5 w-100">
+    {% if game.daily_challenge %}
+        <h1 class="text-center mb-4">Daily Challenge #{{ game.daily_challenge_number }}</h1>
+    {% endif %}
+        
+        
+    <div class="scoreboard mb-4">
+        {% for round in rounds %}
+            {% if round.number is game.current_round.number %}
+                <a href="{% url 'game_update' game.id %}" class="round-score-box blinker">{{ round.number }}</a>
+            {% else %}
+                {% if round.state == 'CORRECT' %}
+                    <a href="{% url 'game_round_details' game.id round.number %}" class="round-score-box correct">{{ round.number }}</a>
+                {% elif round.state == 'WRONG' %}
+                    <a href="{% url 'game_round_details' game.id round.number %}" class="round-score-box wrong">{{ round.number }}</a>
+                {% else %}
+                    <div class="round-score-box blocked">{{ round.number }}</div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    {% if not round_detailed %}
+        <div class="text-center mb-4">
+            <div class="container d-flex justify-content-between align-items-center mb-4 p-0" style="max-width:var(--max-width)">
+                
+                {% with game.current_round.number|add:"-1" as prev_round_number %}
+                    {% if prev_round_number < 1 %}
+                        <button class="btn btn-secondary d-flex gap-2 align-items-center" style="height: 38px; padding: 6px 12px; visibility: hidden;">
+                            <i class="bi bi-caret-left"></i>
+                            Prev
+                        </button>
+                    {% else %}
+                        <button class="btn btn-secondary d-flex gap-2 align-items-center" onclick=window.location.href="{% url 'game_round_details' game.id prev_round_number %}" style="height: 38px; padding: 6px 12px;" title="Previous Round">
+                            <i class="bi bi-caret-left"></i>
+                            Prev
+                        </button>
+                    {% endif %}
+                {% endwith %}
+
+                <h2 class="mb-1">Round {{ game.current_round.number }}</h2>
+                
+                <button class="btn btn-secondary d-flex gap-2 align-items-center" style="height: 38px; padding: 6px 12px; visibility: hidden;">
+                    <i class="bi bi-caret-right"></i>
+                    Next
+                </button>
+                
+            </div>
+
+            <div class="mb-4 rounded" id="image-to-guess-container">
+                <img src="{{ modified_image }}" alt="Modified image" class=" img-fluid rounded shadow-lg" id="image-to-guess" style="max-width:var(--max-width); height: auto;">
+            </div>
+
+            <div class="mb-3">
+                <!-- Buttons -->
+                <div class="d-flex justify-content-center justify-content-between gap-2 mb-3" style="max-width:var(--max-width); margin: 0 auto;">
+                    <form id="skipButtonForm" action="{% url 'skip_round' game.id %}" method="post" style="margin:0;">
+                        {% csrf_token %}
+                        <button class="btn btn-secondary d-flex gap-2 align-items-center" type="submit" id="skipButton" style="height: 38px; padding: 6px 12px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fast-forward" viewBox="0 0 16 16">
+                                <path d="M6.804 8 1 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z"/>
+                                <path d="M14.804 8 9 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z"/>
+                            </svg> 
+                            Skip
+                        </button>
+                    </form>
+
+                    <button class="btn btn-primary d-flex gap-2 align-items-center" type="submit" style="height: 38px; padding: 6px 12px;" form="guess-image-form" id="submit-guess-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                        </svg>
+                        Submit
+                    </button>
+                </div>
+
+                <!-- Text Input and Selector -->
+                <form id="guess-image-form" method="post" style="max-width:var(--max-width); margin: 0 auto;" action="{% url 'game_update' game.id %}">
+                    {% csrf_token %}
+                    <div class="position-relative">
+
+                        {% if game.mode == 'Cover Image' %}
+                            <input type="text" class="form-control text-center" placeholder="Enter and select the media title here" id="guessCoverInput" name="user_input" required autocomplete="off" style="width: 100%;" data-game-source="{{ game.source }}">
+                        {% elif game.mode == 'Character Image' %}
+                            <input type="text" class="form-control text-center" placeholder="Enter and select the character's name here" id="guessCharacterInput" name="user_input" required autocomplete="off" style="width: 100%;">
+                        {% endif %}
+
+                        <div id="suggestions" class="suggestion-box"></div>
+                    
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="text-center mb-4">
+            <div class="container d-flex justify-content-between align-items-center mb-4 p-0" style="max-width:var(--max-width)">
+                
+                {% with round_detailed.number|add:"-1" as prev_round_number %}
+                    {% if prev_round_number < 1 %}
+                        <button class="btn btn-secondary d-flex gap-2 align-items-center" style="height: 38px; padding: 6px 12px; visibility: hidden;">
+                            <i class="bi bi-caret-left"></i>
+                            Prev
+                        </button>
+                    {% else %}
+                        <button class="btn btn-secondary d-flex gap-2 align-items-center" onclick=window.location.href="{% url 'game_round_details' game.id prev_round_number %}" style="height: 38px; padding: 6px 12px;" title="Previous Round">
+                            <i class="bi bi-caret-left"></i>
+                            Prev
+                        </button>
+                    {% endif %}
+                {% endwith %}
+
+                <h2 class="mb-1">Round {{ round_detailed.number }}</h2>
+                
+                {% with round_detailed.number|add:"1" as next_round_number %}
+                    {% if next_round_number > game.n_questions %}
+                        <button class="btn btn-secondary" style="height: 38px; padding: 6px 12px; visibility: hidden;">
+                            <i class="bi bi-caret-right"></i>
+                            Next
+                        </button>
+                    {% else %}
+                        {% if next_round_number == game.current_round.number %}
+                            <button class="btn btn-warning d-flex gap-2 align-items-center" id="anti-spam-button" onclick=window.location.href="{% url 'game_round_details' game.id next_round_number %}" style="height: 38px; padding: 6px 12px;" title="Next Round">
+                                <i class="bi bi-caret-right"></i>
+                                Next
+                            </button>
+                        {% else %}   
+                            <button class="btn btn-secondary d-flex gap-2 align-items-center" onclick=window.location.href="{% url 'game_round_details' game.id next_round_number %}" style="height: 38px; padding: 6px 12px;" title="Next Round">
+                                <i class="bi bi-caret-right"></i>
+                                Next
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+
+            </div>
+            
+            <div id="image-alternate-container" class="mb-3 rounded position-relative" style="cursor: pointer; display: inline-block; min-height: 600px; max-width:var(--max-width)" data-round-state="{{ round_detailed.state }}">
+
+                <img src="{{ image_url }}" alt="Original image" class="img-fluid rounded fade-in" id="image-original" style="position: absolute; top: 0; left: 0; max-width:var(--max-width); height: auto; z-index: 2; transition: opacity 0.5s ease;">
+
+                <img src="{{ modified_image }}" alt="Modified image" class="img-fluid rounded" id="image-modified" style="position: absolute; top: 0; left: 0; max-width:var(--max-width); height: auto; z-index: 1; transition: opacity 0.5s ease; opacity: 1;">
+            </div>
+
+            
+
+            <div class="mb-1" id="round-answer-data-container" data-round-db-id="{{ round_detailed.db_entry_id }}" data-game-mode="{{ game.mode }}">
+
+                {% if round_detailed.state == 'CORRECT' %}
+                    <p style="font-size: 2.5rem; font-weight: bold;" class="text-success" id="round-answer">
+                        {{ round_detailed.correct_answer }}
+                    </p>
+                
+                {% elif round_detailed.state == 'WRONG' %}
+                    {% if round_detailed.user_answer %}
+                        <p class="lead text-danger mb-1">Your answer: {{ round_detailed.user_answer }}</p>
+                    {% else %}
+                        <p class="lead text-danger mb-1">You skipped the round</p>
+                    {% endif %}
+
+                    <p class="lead text-muted mb-0">Correct answer was: </p>
+                    
+                    <p style="font-size: 2.5rem; font-weight: bold;" id="round-answer" class="mb-0">
+                        {{ round_detailed.correct_answer }}
+                    </p>
+                {% endif %}
+                
+                <div id="fetched-data-container">
+                    <em id="other-name" style="font-size: 1.5rem;"></em>
+                    
+                    <div id="round-details-container"></div>
+
+                    <div id="character-participations" class="d-flex flex-wrap justify-content-center mt-5 gap-3 mx-auto" style="max-width:800px"></div>
+                </div>
+
+            </div>
+        </div>
+
+        
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

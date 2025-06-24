@@ -1,0 +1,78 @@
+{% extends "quiz/layout.html" %}
+
+{% block body %}
+
+<div class="container mt-5 w-100">
+    <h1 class="text-center">Game Configuration</h1>
+
+    <div class="text-center mb-4">
+        <p class="lead">Configure your game settings below:</p>
+
+        {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        
+        <form method="post" class="mt-2" action="{% url 'game_configuration' %}" >
+            {% csrf_token %}
+
+            <div class="form-group mb-4">
+                <label for="source" class="mb-2"><strong style="font-size: 20px;">Source</strong></label>
+                <div id="sourceCards" class="d-flex gap-3 justify-content-center">
+                  <div class="option-card selected" data-value="ANIME">Anime</div>
+                  <div class="option-card" data-value="MANGA">Manga</div>
+                </div>
+                <input type="hidden" name="game_source" id="game-source-hidden" value="ANIME">
+            </div>
+
+
+            <div class="form-group mb-4">
+                <label for="gamemode" class="mb-2"><strong style="font-size: 20px;">Game Mode</strong></label>
+                <div id="gameModeCards" class="d-flex gap-3 justify-content-center">
+                  <div class="option-card selected" data-value="Character Image">Character Image</div>
+                  <div class="option-card" data-value="Cover Image">Cover Image</div>
+                </div>
+                <input type="hidden" name="game_mode" id="game-mode-hidden" value="Character Image">
+            </div>
+            
+            <div class="form-group mb-4">
+                <label for="genres" class="mb-2"><strong style="font-size: 20px;">Genres</strong></label>
+
+                  <div id="loadingSpinner" class="text-center mt-5 mb-3">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  
+                <div id="genreControls" class="d-flex gap-2 justify-content-center mb-2"></div>
+
+                <div id="genreCards" class="d-flex flex-wrap gap-2 mb-3 justify-content-center"></div>
+
+                <input type="hidden" name="game_genres" id="game-genres-hidden" value="" required>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="number_of_questions" class="mb-1"><strong style="font-size: 20px;">Number of Questions</strong></label>
+
+                <input type="range" class="form-range" id="number-of-questions" name="number_of_questions" min="1" max="50" value="10" oninput="this.nextElementSibling.value = this.value">
+
+                <input class="form-control mx-auto text-center p-1" style="width: 70px;" onblur="this.value = this.value < 1 ? 1 : this.value > 50 ? 50 : this.value" type="number" value="10" min="1" max="50" onchange="this.previousElementSibling.value = this.value" />
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty" class="mb-1"><strong style="font-size: 20px;">Difficulty Level</strong></label>
+
+                <input type="range" class="form-range" id="difficulty" name="difficulty" min="1" max="10" value="1" oninput="this.nextElementSibling.value = this.value">
+
+                <input class="form-control mx-auto text-center p-1" style="width: 60px;" onblur="this.value = this.value < 1 ? 1 : this.value > 10 ? 10 : this.value" type="number" value="1" min="1" max="10" onchange="this.previousElementSibling.value = this.value" />
+            </div>
+
+            <button type="submit" id="submitConfigButton" class="btn btn-primary my-5 p-2 w-75" style="font-size:20px; max-width: var(--max-width);">Start Game</button>
+        </form>
+    </div>
+
+</div>
+
+
+{% endblock %}

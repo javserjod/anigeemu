@@ -1,0 +1,35 @@
+{% extends "quiz/layout.html" %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-3">Home</h1>
+
+    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+        {% if user.is_authenticated %}
+            <span class="content text-center lead">Welcome to aniGeemu, {{ user.username }}!</span>
+            <span class="content text-center mb-5 lead">Prove your knowledge about anime and manga through fun image guessing games!</span>
+
+            <span class="content text-center lead">You can start playing by configuring your <strong>own game settings</strong>:</span>
+            <a class="btn btn-primary mt-2 mb-5 p-2 w-75" href="{% url 'game_configuration' %}" style="font-size:20px; max-width: var(--max-width);">Game Configuration</a>
+
+            <span class="content text-center lead">Or you can try the <strong>daily challenges</strong>:</span>
+            <a class="btn btn-warning mt-2 mb-5 p-2 w-75" href="{% url 'daily_challenge_list' %}" style="font-size:20px; max-width: var(--max-width);">Daily Challenges</a>
+
+            <span class="content text-center lead">Feel free to reach out if you have any questions or suggestions!</span>
+            <span class="content text-center lead">You can also support the improvement of this project by tipping.</span>
+            <iframe id='kofiframe' src='https://ko-fi.com/javserjod/?hidefeed=true&widget=true&embed=true&preview=true' class="mt-5" style='width:100%;padding:4px;' height='712' title='javserjod'></iframe>
+        {% else %}
+            <span class="navbar-text content m-0 lead">Welcome!</span>
+            <span class="content text-center lead">Please log in or register to access to the app and save your progress!.</span>
+            <div class="mt-3">
+                <a class="btn btn-primary" href="{% url 'login_view' %}" style="font-size:20px; max-width: var(--max-width);">Login</a>
+                <a class="btn btn-secondary" href="{% url 'register' %}" style="font-size:20px; max-width: var(--max-width);">Register</a>
+            </div>
+        {% endif %}
+        
+    </div>
+
+</div>
+
+{% endblock %}

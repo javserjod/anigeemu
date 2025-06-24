@@ -1,0 +1,37 @@
+<div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex mb-3 card-col">
+    {% if game.is_finished %}
+        <a href="{% url 'game_round_details' game.id 1 %}" class="text-decoration-none w-100 record-card">
+    {% else %}
+        <a href="{% url 'game_update' game.id %}" class="text-decoration-none w-100 record-card">
+    {% endif %}
+        <div class="card h-100 p-0 shadow-sm 
+        {% if game.is_finished and game.mean_score >= 50 %}
+            bg-success bg-gradient text-white
+        {% elif game.is_finished and game.mean_score < 50 %}
+            bg-danger bg-gradient text-white
+        {% else %}
+            bg-gray-100 bg-gradient text-dark
+        {% endif %}">
+        
+            <div class="card-header p-2 d-flex align-items-center flex-column">
+                <h5 class="card-title my-2">Daily Challenge #{{game.daily_challenge_number}}</h5>
+                <span class="badge bg-secondary my-1">{{ game.daily_challenge_date|date:"Y-m-d" }}</span>
+            </div>
+
+            <div class="card-body">
+                <p class="card-text">Mode: {{ game.mode }}</p>
+                <p class="card-text">Difficulty: {{ game.difficulty }}</p>
+                <!--<p class="card-text">Created on: {{ game.date_played|date:"Y-m-d" }}</p>-->
+                <p class="card-text">Source: {{ game.source }}</p>
+                <hr>
+                {% if game.is_finished %}
+                    <p class="card-text"><strong>Finished</strong>: {{ game.n_questions }}/{{ game.n_questions }}</p>
+                {% else %}
+                    <p class="card-text">Status: <strong>{{ game.current_round.number|add:"-1" }}/{{ game.n_questions }}</strong></p>
+                {% endif %}
+
+                <p class="card-text">Success rate: <strong>{{ game.mean_score|floatformat:2 }} %</strong></p>
+            </div>
+        </div>
+    </a>
+</div>

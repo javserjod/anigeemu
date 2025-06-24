@@ -1,0 +1,252 @@
+:root {
+    --max-width: 400px;
+
+    --font-color: black;
+    --font-color-light: #333;
+
+    --unselected-card-border: #ddd;
+    --unselected-card-fill: #f8f9fa;
+    --selected-card-border: #007bff;
+    --selected-card-fill: #e6f0ff;
+
+    --pending: #eeeeee;
+    --wrong: #dc3545;
+    --correct: #28a745;
+
+    --secondary-color: #6c757d;
+
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    min-width: 300px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* CONTROL CARD STYLES --------------------------------------------------*/
+.control-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background-color: #d8d8d8;
+    border-radius: 8px;
+    padding: 5px;
+    padding-inline: 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.control-card:hover {
+    background-color: #c0c0c0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #b0b0b0;
+}
+
+.control-card.clicked {
+  animation: clickFlash 0.4s;
+}
+
+@keyframes clickFlash {
+  0%   { box-shadow: 0 0 0px #ffffff; }
+  50%  { box-shadow: 0 0 18px #a7a7af; }
+  100% { box-shadow: 0 0 0px #fff; }
+}
+
+
+/* OPTION CARD STYLES ---------------------------------------------------*/
+.option-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--unselected-card-border);
+    background-color: var(--unselected-card-fill);
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+.option-card.selected {
+    background-color: var(--selected-card-fill);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: var(--selected-card-border);
+    animation: rotate-select 0.3s ease;
+}
+
+@keyframes rotate-select {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(2deg); }
+  70% { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.option-card:hover {
+    border-color: var(--selected-card-border);
+    background-color: var(--selected-card-fill);
+}
+
+/* guess_image.html STYLES ---------------------------------------------------*/
+.scoreboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.scoreboard a {
+    text-decoration: none;
+    color: var(--font-color);
+    font-weight: bold;
+}
+
+.blinker {
+  animation: blinker 1.25s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.round-score-box {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid var(--secondary-color);
+    align-items: center;
+    font-weight: bold;
+    background-color: var(--pending);
+  }
+
+.correct {
+  background-color: var(--correct);
+  cursor: pointer;
+}
+.wrong {
+  background-color: var(--wrong);
+  cursor: pointer;
+}
+
+.blocked {
+  cursor: not-allowed;
+}
+
+
+
+
+/*  USER GUESS INPUT -------------------------------------------------*/
+.suggestion-box {
+  border: 1px solid #ccc;
+  background: white;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+}
+
+.suggestion-box div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-box div:hover {
+  background-color: #f0f0f0;
+}
+
+
+/* HISTORY/RECORD CARD STYLES --------------------------------------------------*/
+.record-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--unselected-card-border);
+    background-color: var(--unselected-card-fill);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.record-card:hover {
+    border-color: var(--selected-card-border);
+    background-color: var(--selected-card-fill);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.profile-container a {
+    text-decoration: none;
+    color: var(--font-color-light);
+}
+
+.delete-card-effect {
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-30px) scale(0.4);
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+
+/* GENERIC STYLES --------------------------------------------------*/
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+
+/* ADDITIONAL FETCHED INFO FOR ROUNDS ------------------------------*/
+.fade-in {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* ROUND DETAILS --------------------------------------------------*/
+.glow-correct {
+    box-shadow: 0 0 30px 2px var(--correct);
+}
+
+.glow-wrong {
+    box-shadow: 0 0 30px 2px var(--wrong);
+}
+
+
+/* ANILIST FETCHED DESCRIPTION --------------------------------------------------*/
+.markdown_spoiler {
+  background-color: black;
+  color: black;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 0 4px;
+  user-select: none;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.markdown_spoiler a {
+  color: black;
+  text-decoration: none;
+  user-select: none;
+  pointer-events: none;
+}

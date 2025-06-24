@@ -1,0 +1,33 @@
+{% extends "quiz/layout.html" %}
+
+{% block body %}
+<div class="container mt-5 border p-5 shadow-lg rounded">
+    <h2 class="text-center mb-3">Register</h2>
+
+    {% if message %}
+        <div class="alert alert-warning mb-3" role="alert">{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="post" class="d-flex flex-column gap-3 my-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <input class="form-control" autofocus type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="email" name="email" placeholder="Email Address" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password" required>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Register">
+    </form>
+
+    <div class="text-center mt-3">
+        <p>Already have an account? <a href="{% url 'login_view' %}">Log In here.</a></p>
+    </div>
+</div>
+
+{% endblock %}

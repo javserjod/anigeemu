@@ -1,0 +1,57 @@
+{% extends "quiz/layout.html" %}
+
+{% block body %}
+    <div class="container mt-5 profile-container d-flex flex-column align-items-center">
+         
+        <h1 class="text-center mb-4">{{ user.username }}'s Own Game History </h1>
+        
+        {% if page_obj.paginator.count == 0 or user.games.count == 0 %}
+            <div class="alert alert-info text-center" role="alert">
+                No games found. Create your own game by configuring the game settings!
+            </div>
+        {% else %}
+            <section class="container px-3">
+                <div class="card-row row justify-content-start">
+                    {% for game in page_obj %}
+                        {% include "quiz/components/game_card.html" with game=game %}
+                    {% endfor %}
+                </div>
+            </section>
+    </div>
+
+    <nav aria-label="Games navigation">
+        <ul class="pagination justify-content-center mt-4">
+            
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+                {% if i >= page_obj.number|add:"-2" and i <= page_obj.number|add:"2" %}
+                    {% if i == page_obj.number %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+
+{% endblock %}
