@@ -3,6 +3,8 @@ The base version of aniGeemu served as my Final Project for Harvard's cs50 Web P
 
 Demonstration: [https://youtu.be/_Mc3rbbnGbI](https://youtu.be/pK1s9utvF14)
 
+Deployed (free plan, expected to be a bit slow): [https://anigeemu.onrender.com/](https://anigeemu.onrender.com/)
+
 <details close>
 <summary>See screenshots</summary>
 <br>
