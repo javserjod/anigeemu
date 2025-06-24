@@ -423,8 +423,11 @@ def get_character_image(source, genres, game, difficulty):
     random_page = random.randint(1, np.ceil(
         difficulty * DIFFICULTY_RATIO_MEDIA))
     print("before random page char")
-    random_page_char = random.randint(
-        1, np.ceil(difficulty * DIFFICULTY_RATIO_CHARACTERS))
+    try:
+        random_page_char = random.randint(
+            1, np.ceil(difficulty * DIFFICULTY_RATIO_CHARACTERS))
+    except Exception as e:
+        print(f"Error generating random page for characters: {e}")
 
     print("After random genre and pages...")
     url = "https://graphql.anilist.co"
