@@ -417,9 +417,12 @@ def get_character_image(source, genres, game, difficulty):
     """
     print("Inside character image fetcher...")
     genres_list = genres_to_list(genres)
+    print("before random genre")
     random_genre = random.choice(genres_list)
+    print("before random page")
     random_page = random.randint(1, np.ceil(
         difficulty * DIFFICULTY_RATIO_MEDIA))
+    print("before random page char")
     random_page_char = random.randint(
         1, np.ceil(difficulty * DIFFICULTY_RATIO_CHARACTERS))
 
