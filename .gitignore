@@ -3,5 +3,4 @@ __pycache__/
 *.pyc
 *.log
 *.sqlite3
-migrations/
 .vscode
