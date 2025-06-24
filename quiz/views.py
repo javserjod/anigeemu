@@ -415,6 +415,7 @@ def get_character_image(source, genres, game, difficulty):
     When using seed, the same character will be selected for the same game configuration, so the game is reproducible.
     Returns the image URL of a character from a random media item, the character's name (correct answer), its ID in AniList for future use and other additional info.
     """
+    print("Inside character image fetcher...")
     genres_list = genres_to_list(genres)
     random_genre = random.choice(genres_list)
     random_page = random.randint(1, np.ceil(
@@ -422,6 +423,7 @@ def get_character_image(source, genres, game, difficulty):
     random_page_char = random.randint(
         1, np.ceil(difficulty * DIFFICULTY_RATIO_CHARACTERS))
 
+    print("After random genre and pages...")
     url = "https://graphql.anilist.co"
     query = '''
     query ($page: Int, $pageChar: Int, $type: MediaType, $genre: [String], $perPage: Int) {
